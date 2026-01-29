@@ -10,7 +10,7 @@
     "start": "node dist/apps/backend/src/main.js",
     "start:dev": "tsc-watch --onSuccess \"node dist/apps/backend/src/main.js\"",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "npx prisma migrate deploy && node dist/apps/backend/src/main.js",
+    "start:prod": "npx prisma migrate deploy && node dist/main.js",
     "test": "NODE_ENV=test jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
