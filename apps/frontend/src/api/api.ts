@@ -1,4 +1,3 @@
-// src/api/api.ts
 import axios from "axios";
 
 export const api = axios.create({
@@ -6,12 +5,11 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-// Routes qui ne doivent PAS déclencher de redirection automatique
-const NO_REDIRECT_ROUTES = [
-  "/auth/login",
-  "/auth/register",
-  "/auth/signin",
-  "/auth/signup",
+// Liste des endpoints API (Backend)
+// Ce sont les appels vers le serveur qui ne doivent pas déclencher de redirection
+const NO_REDIRECT_API_ROUTES = [
+  "/auth/login",    // Endpoint backend
+  "/auth/register", // Endpoint backend
 ];
 
 api.interceptors.response.use(
@@ -20,19 +18,24 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const requestUrl = error.config?.url || "";
 
-    // Ne pas rediriger si la requête concerne l'authentification
-    const isAuthRoute = NO_REDIRECT_ROUTES.some((route) =>
+    // Vérifie si la requête API concernait l'authentification
+    const isAuthApiRequest = NO_REDIRECT_API_ROUTES.some((route) =>
       requestUrl.includes(route)
     );
 
-    if (isAuthRoute) {
+    if (isAuthApiRequest) {
       return Promise.reject(error);
     }
 
     const currentPath = window.location.pathname;
-    console.log("Interceptor triggered", status, requestUrl, error.response);
-    if (status === 401 && currentPath !== "/unauthorized") {
-      window.location.replace("/unauthorized");
+
+    // Gestion de l'erreur 401 (Non autorisé)
+    if (status === 401) {
+      // On vérifie si l'utilisateur n'est pas DÉJÀ sur la page de connexion ou d'inscription
+      if (currentPath !== "/connexion" && currentPath !== "/inscription") {
+        // Redirection vers la vraie route de connexion
+        window.location.replace("/connexion");
+      }
     } else if (status === 403 && currentPath !== "/forbidden") {
       window.location.replace("/forbidden");
     }
