@@ -1,0 +1,83 @@
+import { useState } from "react";
+import { HiEye, HiEyeOff } from "react-icons/hi";
+import { toast } from "react-toastify";
+
+type Props = {
+  userId: number;
+};
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+export default function PasswordForm({ userId }: Props) {
+  const [formData, setFormData] = useState({
+    oldPassword: "",
+    newPassword: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${API_URL}/users/${userId}/password`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        toast.success("Mot de passe modifié avec succès !");
+        setFormData({ oldPassword: "", newPassword: "" });
+      } else {
+        toast.error("Erreur lors de la modification du mot de passe");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erreur de connexion au serveur");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="relative"> 
+        <label className="block text-sm font-medium text-gray-700">Ancien mot de passe</label> 
+        <input 
+          type={showOldPassword ? "text" : "password"} 
+          value={formData.oldPassword} 
+          onChange={(e) => setFormData({ ...formData, oldPassword: e.target.value }) }
+          className="border rounded p-2 w-full pr-10 mt-1" 
+        /> 
+        <button type="button" 
+          onClick={() => setShowOldPassword(!showOldPassword)} 
+          className="absolute right-2 top-8 text-gray-600 hover:text-gray-800" 
+        > 
+          {showOldPassword ? <HiEyeOff className="w-5 h-5" /> : <HiEye className="w-5 h-5" />} 
+        </button> 
+      </div> 
+
+      <div className="relative">
+        <label className="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
+        <input
+          type={showPassword ? "text" : "password"}
+          value={formData.newPassword}
+          onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+          className="border rounded p-2 w-full pr-10 mt-1"
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-2 top-8 text-gray-600 hover:text-gray-800"
+        >
+          {showPassword ? <HiEyeOff className="w-5 h-5" /> : <HiEye className="w-5 h-5" />}
+        </button>
+      </div>
+
+      <button
+        type="submit"
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full md:w-auto"
+      >
+        Mettre à jour le mot de passe
+      </button>
+    </form>
+  );
+}

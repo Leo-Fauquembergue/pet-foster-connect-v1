@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:3001
+@userId = 1
+
+### 1. RÉCUPÉRER TOUS LES UTILISATEURS
+GET {{baseUrl}}/users
+
+### 2. RÉCUPÉRER UN UTILISATEUR
+GET {{baseUrl}}/users/{{userId}}
+
+### 3. CRÉER UN UTILISATEUR (Inscription manuelle)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "nouveau.user@test.com",
+  "password": "Password123!",
+  "role": "individual",
+  "phoneNumber": "0612345678",
+  "address": "10 rue de la Paix"
+}
+
+### 4. MODIFIER UN UTILISATEUR
+PUT {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+
+{
+  "phoneNumber": "0700000000"
+}
+
+### 5. SUPPRIMER UN UTILISATEUR (Soft Delete)
+DELETE {{baseUrl}}/users/{{userId}}

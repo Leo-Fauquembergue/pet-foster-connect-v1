@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:3001
+
+### 1. Créer une demande (Candidat -> Animal 1)
+POST {{baseUrl}}/applications
+Content-Type: application/json
+
+{
+  "animalId": 1,
+  "message": "Bonjour, je veux adopter Rex.",
+  "applicationType": "adoption"
+}
+
+### 2. Voir mes demandes envoyées
+GET {{baseUrl}}/applications/sent
+
+### 3. Voir les demandes reçues (Refuge)
+GET {{baseUrl}}/applications/received
+
+### 4. Accepter une demande
+# Exemple : Animal 4, User 9
+PATCH {{baseUrl}}/applications/4/9
+Content-Type: application/json
+
+{
+  "applicationStatus": "approved"
+}
+
+### 5. Refuser une demande
+# Exemple : Animal 3, User 8
+PATCH {{baseUrl}}/applications/3/8
+Content-Type: application/json
+
+{
+  "applicationStatus": "rejected"
+}
+
+### 6. Archiver (Soft Delete)
+DELETE {{baseUrl}}/applications/5/10

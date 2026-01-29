@@ -1,0 +1,5 @@
+@baseUrl = http://localhost:3001
+
+### HEALTH CHECK (Ping)
+# Vérifie que le serveur NestJS tourne
+GET {{baseUrl}}

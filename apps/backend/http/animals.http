@@ -1,0 +1,59 @@
+@baseUrl = http://localhost:3001
+@animalId = 1
+
+### 1. RÉCUPÉRER TOUS LES ANIMAUX
+GET {{baseUrl}}/animals
+
+### 2. CRÉER UN ANIMAL
+POST {{baseUrl}}/animals
+Content-Type: application/json
+
+{
+  "name": "Luna",
+  "speciesId": 2,
+  "sex": "female",
+  "age": "2 ans",
+  "weight": 4.2,
+  "description": "Une petite chatte très calme.",
+  "animalStatus": "available"
+}
+
+### 3. RÉCUPÉRER UN ANIMAL
+GET {{baseUrl}}/animals/{{animalId}}
+
+### 4. MODIFIER UN ANIMAL
+PATCH {{baseUrl}}/animals/{{animalId}}
+Content-Type: application/json
+
+{
+  "weight": 5.5,
+  "name": "Luna Grandit"
+}
+
+### 5. TEST ERREUR : SEXE INVALIDE
+# Doit renvoyer 400 Bad Request
+POST {{baseUrl}}/animals
+Content-Type: application/json
+
+{
+  "name": "Petit Gris",
+  "sex": "ALIEN",
+  "speciesId": 1,
+  "weight": 5.0,
+  "animalStatus": "available"
+}
+
+### 6. TEST ERREUR : CHAMP MANQUANT (Nom)
+# Doit renvoyer 400 Bad Request
+POST {{baseUrl}}/animals
+Content-Type: application/json
+
+{
+  "sex": "male",
+  "speciesId": 1,
+  "weight": 5.0,
+  "animalStatus": "available"
+}
+
+### 7. SUPPRIMER UN ANIMAL
+DELETE {{baseUrl}}/animals/{{animalId}}

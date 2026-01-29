@@ -1,0 +1,84 @@
+//Page des details d'un seul refuge
+//Url -> http://localhost:5173/refuges/48
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import BackBanner from "../components/ui/BackBanner";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const RefugeDetailPage = () => {
+  const { id } = useParams<{ id: string }>();
+
+  const [shelter, setShelter] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchShelter = async () => {
+      try {
+        if (!id) return; // évite l'appel avec undefined
+        const res = await fetch(`${API_URL}/shelters/${id}`);
+        if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
+        const data = await res.json();
+        setShelter(data);
+      } catch (err) {
+        console.error("Erreur API:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchShelter();
+  }, [id]);
+
+  if (loading) return <p>Chargement...</p>;
+  if (!shelter) return <p>Refuge introuvable</p>;
+
+  return (
+    <div className="bg-bgapp font-openSans text-gray-800">
+      <BackBanner to="/refuges" />
+      <div className="p-8 max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold text-center mb-8 font-montserrat">
+          {shelter.shelterName}
+        </h1>
+
+        <div
+          className="border-2 rounded-xl p-6 shadow-md flex flex-col md:flex-row gap-6 bg-bgapp font-openSans text-gray-800"
+          style={{ borderColor: "#2D6A4F" }}
+        >
+          <img
+            src={
+              shelter.logo ?? "https://placehold.co/150x150?text=Pas+de+logo"
+            }
+            alt={`${shelter.shelterName} logo`}
+            className="w-32 h-32 rounded-full object-cover bg-gray-200"
+          />
+
+          <div className="flex flex-col justify-start">
+            <p className="text-sm text-gray-700 mb-2">
+              <span className="font-semibold">SIRET :</span> {shelter.siret}
+            </p>
+            <p className="text-sm text-gray-600">
+              <span className="font-semibold">Description :</span>
+            </p>
+            {shelter.description && (
+              <p className="text-gray-800">{shelter.description}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Boutons navigation */}
+        <div className="mt-6 flex gap-4 justify-center">
+          {shelter?.pfcUserId && (
+            <Link
+              to={`/refuges/${shelter.pfcUserId}/animaux`}
+              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white shadow-md transition"
+            >
+              Voir les animaux du refuge
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RefugeDetailPage;
