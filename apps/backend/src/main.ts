@@ -10,11 +10,13 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Autoriser les requêtes CORS depuis le frontend
+  const allowedOrigins = [
+    "http://localhost:5173",          // Dev local
+    process.env.CORS_ORIGIN,          // Prod (URL Vercel définie sur Render)
+  ].filter(Boolean); // Enlève les valeurs vides (undefined/null)
+
   app.enableCors({
-    origin: [
-      "http://localhost:5173",          // Pour le dev local
-      process.env.CORS_ORIGIN || "",    // Pour la prod (Vercel)
-    ],
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
