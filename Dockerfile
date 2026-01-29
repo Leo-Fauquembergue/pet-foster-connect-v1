@@ -18,6 +18,9 @@ RUN npm install
 # Copier tout le code source
 COPY . .
 
+# Construire les types partagés AVANT le backend
+RUN npm run build --workspace=@projet/shared-types
+
 # Générer le client Prisma (Backend)
 WORKDIR /app/apps/backend
 RUN npx prisma generate

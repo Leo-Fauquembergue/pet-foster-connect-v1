@@ -20,13 +20,9 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "@projet/shared-types": ["../../packages/shared-types/src/index.ts"]
-    }
+    "noFallthroughCasesInSwitch": false
   },
   "include": [
-    "src/**/*",
-    "../../packages/shared-types/src/**/*" 
+    "src/**/*"
   ]
 }
