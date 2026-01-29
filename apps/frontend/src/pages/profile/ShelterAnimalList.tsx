@@ -8,6 +8,14 @@ import Badge from "../../components/ui/Badge";
 import ConfirmationModal from "../../components/ui/ConfirmationModal";
 import Loader from "../../components/ui/Loader";
 
+// Dictionnaire pour la traduction des statuts
+const statusLabels: Record<string, string> = {
+  available: "Disponible",
+  adopted: "Adopté",
+  foster_care: "En famille d'accueil",
+  unavailable: "Indisponible",
+};
+
 export default function ShelterAnimalList() {
   const { id } = useParams<{ id: string }>();
   const [animals, setAnimals] = useState<AnimalWithRelations[]>([]);
@@ -87,8 +95,8 @@ export default function ShelterAnimalList() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 text-sm">
-            {filteredAnimals.length > 0 ? (
-              filteredAnimals.map((animal) => (
+            {animals.length > 0 ? (
+              animals.map((animal) => (
                 <tr
                   key={animal.id}
                   className="hover:bg-gray-50 transition-colors"
@@ -175,11 +183,4 @@ export default function ShelterAnimalList() {
         }
         message={
           actionToConfirm?.type === "delete"
-            ? "Cette action placera l'animal dans la corbeille."
-            : "L'animal sera de nouveau visible."
-        }
-        variant={actionToConfirm?.type === "delete" ? "danger" : "info"}
-      />
-    </div>
-  );
-}
+            ? "Cette action placera
