@@ -111,7 +111,9 @@ export default function ShelterAnimalList() {
                   </td>
                   <td className="px-6 py-4">
                     <Badge
-                      label={statusLabels[animal.animalStatus] ?? animal.animalStatus}
+                      label={
+                        statusLabels[animal.animalStatus] ?? animal.animalStatus
+                      }
                       variant={
                         animal.animalStatus === "available"
                           ? "success"
@@ -183,4 +185,11 @@ export default function ShelterAnimalList() {
         }
         message={
           actionToConfirm?.type === "delete"
-            ? "Cette action placera
+            ? "Cette action placera l'animal dans la corbeille."
+            : "L'animal sera de nouveau visible."
+        }
+        variant={actionToConfirm?.type === "delete" ? "danger" : "info"}
+      />
+    </div>
+  );
+}
