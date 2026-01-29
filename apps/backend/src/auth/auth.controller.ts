@@ -24,6 +24,9 @@ import { AuthService } from "./auth.service";
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // Petite aide pour savoir si on est en PROD (Render) ou DEV (Local)
+  private isProduction = process.env.NODE_ENV === "production";
+
   @Post("login")
   @ApiOperation({ summary: "Se connecter" })
   @ApiBody({
@@ -46,13 +49,18 @@ export class AuthController {
     @Res({ passthrough: true }) res: express.Response
   ) {
     const { user, token } = await this.authService.login(dto);
+    
+    // CONFIGURATION INTELLIGENTE
     res.cookie("access_token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      // En PROD (Render) : true (HTTPS requis). En DEV : false (HTTP accepté)
+      secure: this.isProduction, 
+      // En PROD : 'none' (Cross-site Vercel/Render). En DEV : 'lax' (Même domaine)
+      sameSite: this.isProduction ? "none" : "lax", 
       maxAge: 1000 * 60 * 60,
       path: "/",
     });
+
     return {
       user,
       access_token: token,
@@ -65,7 +73,9 @@ export class AuthController {
   logout(@Res({ passthrough: true }) res: express.Response) {
     res.clearCookie("access_token", {
       httpOnly: true,
-      sameSite: "lax",
+      secure: this.isProduction,
+      sameSite: this.isProduction ? "none" : "lax",
+      path: "/",
     });
     return { message: "Déconnexion réussie" };
   }
@@ -100,11 +110,15 @@ export class AuthController {
     @Res({ passthrough: true }) res: express.Response
   ) {
     const { user, token } = await this.authService.register(dto);
+    
     res.cookie("access_token", token, {
       httpOnly: true,
-      sameSite: "lax",
+      secure: this.isProduction,
+      sameSite: this.isProduction ? "none" : "lax",
       maxAge: 1000 * 60 * 60,
+      path: "/",
     });
+
     return {
       user,
       access_token: token,
